@@ -17,8 +17,8 @@ def predict_image(image_path):
     confidence = prediction[0][0] if class_label == 'Pneumonia' else 1 - prediction[0][0]
     return class_label, confidence
 
-# Example usage
-image_path = '/path/to/test/image.jpg'  # Replace with the path to your test image
+# method  usage
+image_path = 'test/image.jpg'  # for now, will manually replace with the path to your test image
 if os.path.exists(image_path):
     label, confidence = predict_image(image_path)
     print(f"Prediction: {label} (Confidence: {confidence:.2f})")
