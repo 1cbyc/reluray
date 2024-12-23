@@ -54,7 +54,7 @@ It's worth noting that this project uses a Convolutional Neural Network (CNN) bu
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/image_classification.git
+   git clone https://github.com/1cbyc/image_classification.git
    cd image_classification
    ```
 
