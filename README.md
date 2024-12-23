@@ -44,3 +44,8 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 
 It's worth noting that this project uses a Convolutional Neural Network (CNN) built on the VGG16 architecture for binary image classification, specifically for detecting pneumonia from chest X-rays.
 
+## Current Features
+- Pretrained VGG16 as the base model
+- Custom layers for binary classification
+- Support for training, evaluation, and prediction
+
