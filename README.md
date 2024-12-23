@@ -40,7 +40,7 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 >> while i am fixing that, let me create a section on how to use this.
 
 
-# How to Use
+# For Everyone
 
 It's worth noting that this project uses a Convolutional Neural Network (CNN) built on the VGG16 architecture for binary image classification, specifically for detecting pneumonia from chest X-rays.
 
