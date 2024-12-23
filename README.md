@@ -123,4 +123,5 @@ It's worth noting that this project uses a Convolutional Neural Network (CNN) bu
 4. The output will display the prediction and confidence score:
    ```
    Prediction: Pneumonia (Confidence: 0.95)
-   ``
+   ```
+
