@@ -31,4 +31,4 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 18. Now, i added a `tests/scans` folder to put pseudo tests like i am a doctor or lab scientist. so will use that to match test first.
 19. Having done that, i have updated the predict.py file with the link for single scan image, and want to run it `python3 src/predict.py`. will show the workings.
 
->>maybe because i just bought another pc to run my AI expeditions
+>>maybe because i just bought another pc to run my AI expeditions i am having issues with my virtual environment, 
