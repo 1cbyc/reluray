@@ -103,14 +103,14 @@ It's worth noting that this project uses a Convolutional Neural Network (CNN) bu
 
 ### After training, need help using the Model for Prediction?
 
-## Using The Model for 
+## Using The Model for Prediction
 
-1. Ensure the trained model is available:
+1. Please make sure the trained model is available:
    ```bash
    ls models/best_model.keras
    ```
 
-2. Update the `src/predict.py` file with the path to your test image:
+2. Then, update the `src/predict.py` file with the path to your test image:
    ```python
    image_path = "tests/scans/IM-0029-0001.jpeg"
    ```
