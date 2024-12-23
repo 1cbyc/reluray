@@ -9,8 +9,8 @@ model = load_model('final_model.keras')
 # to define the function for prediction
 def predict_image(image_path):
     img = load_img(image_path, target_size=(224, 224))  # will resize the image to match the input size
-    img_array = img_to_array(img) / 255.0  # Normalize pixel values
-    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+    img_array = img_to_array(img) / 255.0  # for it to normalize pixel values
+    img_array = np.expand_dims(img_array, axis=0)  # then add batch dimension
 
     prediction = model.predict(img_array)
     class_label = 'Pneumonia' if prediction[0][0] > 0.5 else 'Normal'
