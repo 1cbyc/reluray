@@ -129,4 +129,4 @@ From where I'm standing, I think I need to make a webpage to allow people just u
 
 20. Looking to create a small landing page in `templates` to allow file upload and then, will be set to run `python3 app.py` and hold my fucking peace!
 
-_i have a small beef with my wife, i guess i am making dinner myself tonight
+_i have a small beef with my wife, i guess i am making dinner myself tonight. She asked that  i would get back to this in a bit._
