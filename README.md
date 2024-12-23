@@ -88,13 +88,13 @@ It's worth noting that this project uses a Convolutional Neural Network (CNN) bu
 
 ## Training the Model
 
-1. Edit the `train_and_evaluate.py` file to configure the dataset paths:
+1. You should edit the `train_and_evaluate.py` file to configure the dataset paths:
    ```python
    train_data_dir = "data/train"
    val_data_dir = "data/validation"
    ```
 
-2. Run the training script:
+2. Then, run the training script:
    ```bash
    python train_and_evaluate.py
    ```
