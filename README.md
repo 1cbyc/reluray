@@ -23,8 +23,6 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 
 [//]: # (![Screenshot of my successful run so far]&#40;readme-images/Screenshot-2024-09-02-at-9-06-28 PM.png&#41;)
 ![Screenshot of my successful run so far](readme-images/Screenshot-2024-09-02-at-10-09-54-PM.png)
-18. 
-
 
 >it has been three months, and i have decided to quickly work it out by getting it usable to the public. i just added a `src/predict.py` script to allow anyone who wants to run tests with scan images tho. it will work out. today is 23/12/2024.
 
