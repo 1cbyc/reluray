@@ -84,3 +84,41 @@ It's worth noting that this project uses a Convolutional Neural Network (CNN) bu
      │   ├── class1/
      │   └── class2/
      ```
+
+
+## Training the Model
+
+1. Edit the `train_and_evaluate.py` file to configure the dataset paths:
+   ```python
+   train_data_dir = "data/train"
+   val_data_dir = "data/validation"
+   ```
+
+2. Run the training script:
+   ```bash
+   python train_and_evaluate.py
+   ```
+
+3. The best model will be saved as `models/best_model.keras`.
+
+## Using the Model for Prediction
+
+1. Ensure the trained model is available:
+   ```bash
+   ls models/best_model.keras
+   ```
+
+2. Update the `src/predict.py` file with the path to your test image:
+   ```python
+   image_path = "tests/scans/IM-0029-0001.jpeg"
+   ```
+
+3. Run the prediction script:
+   ```bash
+   python src/predict.py
+   ```
+
+4. The output will display the prediction and confidence score:
+   ```
+   Prediction: Pneumonia (Confidence: 0.95)
+   ``
