@@ -128,3 +128,4 @@ _After training, need help using the Model for Prediction?_
    fd
    asds
 Fromseff jsbfhbf 
+From where I'm standing, I think I need to make a webpage to allow people just upload scans directly and it will match with what is on 
