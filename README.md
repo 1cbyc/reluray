@@ -26,4 +26,4 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 18. 
 
 
-!it has been three months, and i have decided to quickly work it out by getting it usable to the public. i just added a predict.py script to allow 
+!it has been three months, and i have decided to quickly work it out by getting it usable to the public. i just added a predict.py script to allow anyone who wants to run test 
