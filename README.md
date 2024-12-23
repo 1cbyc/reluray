@@ -101,7 +101,7 @@ It's worth noting that this project uses a Convolutional Neural Network (CNN) bu
 
 3. The best model will be saved as `models/best_model.keras`.
 
-## Using the Model for Prediction
+## After training, need help using the Model for Prediction
 
 1. Ensure the trained model is available:
    ```bash
