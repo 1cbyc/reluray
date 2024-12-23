@@ -126,3 +126,5 @@ _After training, need help using the Model for Prediction?_
 
 
 From where I'm standing, I think I need to make a webpage to allow people just upload scans directly and it will match with what is on the training model. I have no interest in allowing normies have to open the code every damn time.
+
+20. 
