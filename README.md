@@ -71,10 +71,10 @@ It's worth noting that this project uses a Convolutional Neural Network (CNN) bu
 
 4. **Download Pretrained Weights**:
    - Download the VGG16 weights from [this link](https://storage.googleapis.com/tensorflow/keras-applications/vgg16/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5).
-   - Place the file in the `models/` directory of the project.
+   - Place the file in the `models/` directory of this project.
 
 5. **Prepare the Dataset**:
-   - Organize your dataset as follows:
+   - You should organize your dataset like this:
      ```
      data/
      ├── train/
