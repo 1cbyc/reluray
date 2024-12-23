@@ -50,3 +50,37 @@ It's worth noting that this project uses a Convolutional Neural Network (CNN) bu
 - Support for training, evaluation, and prediction
 
 ## How to Setup
+
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/yourusername/image_classification.git
+   cd image_classification
+   ```
+
+2. **Create a Virtual Environment**:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Download Pretrained Weights**:
+   - Download the VGG16 weights from [this link](https://storage.googleapis.com/tensorflow/keras-applications/vgg16/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5).
+   - Place the file in the `models/` directory of the project.
+
+5. **Prepare the Dataset**:
+   - Organize your dataset as follows:
+     ```
+     data/
+     ├── train/
+     │   ├── class1/
+     │   └── class2/
+     ├── validation/
+     │   ├── class1/
+     │   └── class2/
+     ```
