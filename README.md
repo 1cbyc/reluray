@@ -33,4 +33,4 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 
 >>maybe because i just bought another pc to run my AI expeditions i am having issues with my virtual environment, especially since it is windows and i have setup WSL, but seems broken. currently fixing it fully. once i do, i will push fully again. shouldn't take me past a few minutes.
 
->> quickly removed the evn `rm -rf venv`, and restarted the env `python3 -m venv venv`...
+>> quickly removed the evn `rm -rf venv`, and restarted the env `python3 -m venv venv` and activated it `source venv/bin/activate`. going to reinstall all depend
