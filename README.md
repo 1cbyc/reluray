@@ -37,3 +37,8 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 
 
 
+>> while i am fixing that, let me create a section on how to use this.
+
+
+## How to Use
+
