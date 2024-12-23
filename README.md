@@ -128,3 +128,5 @@ _After training, need help using the Model for Prediction?_
 From where I'm standing, I think I need to make a webpage to allow people just upload scans directly and it will match with what is on the training model. I have no interest in allowing normies have to open the code every damn time.
 
 20. Looking to create a small landing page in `templates` to allow file upload and then, will be set to run `python3 app.py` and hold my fucking peace!
+
+_i have a small beef with my wife, i guess i am making dinner myself tonight
