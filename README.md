@@ -37,6 +37,8 @@ _quickly removed the evn `rm -rf venv`, and restarted the env `python3 -m venv v
 > while i am fixing that, let me create a section on how to use this.
 
 
+
+
 # For Everyone
 
 It's worth noting that this project uses a Convolutional Neural Network (CNN) built on the VGG16 architecture for binary image classification, specifically for detecting pneumonia from chest X-rays.
