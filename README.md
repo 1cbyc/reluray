@@ -29,9 +29,9 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 18. Now, i added a `tests/scans` folder to put pseudo tests like i am a doctor or lab scientist. so will use that to match test first.
 19. Having done that, i have updated the predict.py file with the link for single scan image, and want to run it `python3 src/predict.py`. will show the workings.
 
->>maybe because i just bought another pc to run my AI expeditions i am having issues with my virtual environment, especially since it is windows and i have setup WSL, but seems broken. currently fixing it fully. once i do, i will push fully again. shouldn't take me past a few minutes.
+_maybe because i just bought another pc to run my AI expeditions i am having issues with my virtual environment, especially since it is windows and i have setup WSL, but seems broken. currently fixing it fully. once i do, i will push fully again. shouldn't take me past a few minutes._
 
-> quickly removed the evn `rm -rf venv`, and restarted the env `python3 -m venv venv` and activated it `source venv/bin/activate`. going to reinstall all dependencies again and follow up. the reason for this journal is because i made this open source, so whoever likes this would see what i did and have been up to.
+_quickly removed the evn `rm -rf venv`, and restarted the env `python3 -m venv venv` and activated it `source venv/bin/activate`. going to reinstall all dependencies again and follow up. the reason for this journal is because i made this open source, so whoever likes this would see what i did and have been up to._
 
 
 > while i am fixing that, let me create a section on how to use this.
