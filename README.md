@@ -32,3 +32,5 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 19. Having done that, i have updated the predict.py file with the link for single scan image, and want to run it `python3 src/predict.py`. will show the workings.
 
 >>maybe because i just bought another pc to run my AI expeditions i am having issues with my virtual environment, especially since it is windows and i have setup WSL, but seems broken. currently fixing it fully. once i do, i will push fully again. shouldn't take me past a few minutes.
+
+>> quickly removed the evn `rm -rf venv
