@@ -28,4 +28,4 @@ i wont lie, this dataset is so large it's 2gb despite compressed to fit.
 
 >>it has been three months, and i have decided to quickly work it out by getting it usable to the public. i just added a `src/predict.py` script to allow anyone who wants to run tests with scan images tho. it will work out. today is 23/12/2024.
 
-18. Now, i added a `tests/scans` folder to put pseudo tests like i am a doctor or lab scientist. 
+18. Now, i added a `tests/scans` folder to put pseudo tests like i am a doctor or lab scientist. so will use that to match test first.
