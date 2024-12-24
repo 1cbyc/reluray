@@ -4,8 +4,8 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 
 # to load the trained model
-model = load_model('best_model.keras')
-model = load_model('')
+# model = load_model('best_model.keras')
+model = load_model('../best_model.keras')
 
 # to define the function for prediction
 def predict_image(image_path):
