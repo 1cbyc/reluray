@@ -19,7 +19,7 @@ def predict_image(image_path):
     return class_label, confidence
 
 # how i will use it
-image_path = 'tests/scans/IM-0029-0001.jpeg'  # for now, will manually replace with the path to test image
+# image_path = 'tests/scans/IM-0029-0001.jpeg'  # for now, will manually replace with the path to test image
 image_path = '../tests/scans/IM-0029-0001.jpeg'  # for now, will manually replace with the path to test image
 if os.path.exists(image_path):
     label, confidence = predict_image(image_path)
