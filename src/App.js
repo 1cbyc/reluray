@@ -1,16 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Shield, Heart, AlertTriangle, XCircle } from 'lucide-react';
 import ImageUpload from './components/ImageUpload';
 import ResultDisplay from './components/ResultDisplay';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from './pages/TermsOfUse';
 import { predictImage, healthCheck } from './services/api';
 
-function App() {
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+function HomePage() {
+  const [result, setResult] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
+  const [apiStatus, setApiStatus] = React.useState('checking');
+
+  React.useEffect(() => {
+    // Check API health on component mount
+    checkApiHealth();
+  }, []);
+
+  const checkApiHealth = async () => {
+    try {
+      await healthCheck();
+      setApiStatus('healthy');
+    } catch (error) {
+      console.warn('API not available, using mock mode:', error);
+      setApiStatus('unavailable');
+    }
+  };
 
   const handleImageUpload = async (file) => {
     setLoading(true);
@@ -18,22 +37,42 @@ function App() {
     setResult(null);
 
     try {
-      // Simulate API call - replace with actual backend endpoint
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Convert file to base64
+      const base64Image = await fileToBase64(file);
       
-      // Mock result - replace with actual API response
-      const mockResult = {
-        prediction: Math.random() > 0.5 ? 'Pneumonia' : 'Normal',
-        confidence: (Math.random() * 0.3 + 0.7).toFixed(2),
-        timestamp: new Date().toISOString()
-      };
-      
-      setResult(mockResult);
+      if (apiStatus === 'healthy') {
+        // Use real API
+        const apiResult = await predictImage(base64Image);
+        setResult({
+          prediction: apiResult.prediction,
+          confidence: apiResult.confidence,
+          timestamp: apiResult.timestamp
+        });
+      } else {
+        // Fallback to mock data
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const mockResult = {
+          prediction: Math.random() > 0.5 ? 'Pneumonia' : 'Normal',
+          confidence: (Math.random() * 0.3 + 0.7).toFixed(2),
+          timestamp: new Date().toISOString()
+        };
+        setResult(mockResult);
+      }
     } catch (err) {
-      setError('Failed to analyze image. Please try again.');
+      console.error('Analysis failed:', err);
+      setError(err.response?.data?.error || 'Failed to analyze image. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
   };
 
   return (
@@ -47,6 +86,34 @@ function App() {
           transition={{ duration: 0.6 }}
           className="max-w-4xl mx-auto"
         >
+          {/* API Status Indicator */}
+          {apiStatus === 'checking' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="medical-card mb-6 text-center"
+            >
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-medical-500 mx-auto mb-2"></div>
+              <p className="text-sm text-gray-600">Checking AI service...</p>
+            </motion.div>
+          )}
+
+          {apiStatus === 'unavailable' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="medical-card mb-6 border-l-4 border-health-warning bg-yellow-50"
+            >
+              <div className="flex items-center">
+                <AlertTriangle className="w-5 h-5 text-health-warning mr-3" />
+                <div>
+                  <h3 className="text-sm font-semibold text-yellow-800">Demo Mode</h3>
+                  <p className="text-xs text-yellow-700">AI service unavailable. Running in demo mode with simulated results.</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Hero Section */}
           <div className="text-center mb-12">
             <motion.h1 
@@ -171,6 +238,18 @@ function App() {
 
       <Footer />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfUse />} />
+      </Routes>
+    </Router>
   );
 }
 

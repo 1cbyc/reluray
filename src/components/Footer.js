@@ -61,12 +61,12 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#privacy" className="text-gray-600 hover:text-medical-600 transition-colors">
+                <a href="/privacy" className="text-gray-600 hover:text-medical-600 transition-colors">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#terms" className="text-gray-600 hover:text-medical-600 transition-colors">
+                <a href="/terms" className="text-gray-600 hover:text-medical-600 transition-colors">
                   Terms of Use
                 </a>
               </li>
@@ -91,10 +91,10 @@ const Footer = () => {
         <div className="border-t border-gray-200 mt-8 pt-6">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <p className="text-sm text-gray-500">
-              © 2024 PneumoniaAI. All rights reserved.
+              © 2024 Nsisong Labs. All rights reserved.
             </p>
             <div className="flex items-center space-x-6 text-sm text-gray-500">
-              <span>Made with ❤️ for the medical community</span>
+              <span>Made with ❤️ by <a href="https://github.com/1cbyc" target="_blank" rel="noopener noreferrer" className="text-medical-600 hover:text-medical-700 font-medium">Isaac</a> for the medical community</span>
             </div>
           </div>
         </div>
