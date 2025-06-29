@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .medical-card {
+    @apply bg-white rounded-2xl shadow-xl border border-gray-100 p-6;
+  }
+  
+  .medical-button {
+    @apply bg-medical-500 hover:bg-medical-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-medical-200;
+  }
+  
+  .medical-input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200;
+  }
+  
+  .result-card {
+    @apply medical-card border-l-4;
+  }
+  
+  .result-normal {
+    @apply border-health-success bg-green-50;
+  }
+  
+  .result-pneumonia {
+    @apply border-health-danger bg-red-50;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+} 
