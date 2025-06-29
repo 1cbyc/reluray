@@ -133,3 +133,60 @@ From where I'm standing, I think I need to make a webpage to allow people just u
 
 <!-- _i have a small tiff with my wife, i guess i am making dinner myself tonight. She don tell me say make ah go warm eba chop! i would get back to this in a bit._ -->
 21. encountered a small issue with my vritual environment again, trying to fix that. it's not `skill issues` anyways, so we move.
+
+
+okay, seeing i am working an update for 2025:
+
+## 🎯 Usage
+
+1. **Upload Image**: Drag & drop or click to upload a chest X-ray
+2. **AI Analysis**: Our VGG16 model analyzes the image in seconds
+3. **Get Results**: View prediction (Normal/Pneumonia) with confidence score
+4. **Next Steps**: Follow medical recommendations based on results
+
+## 🔬 Technical Details
+
+### Model Architecture
+- **Base Model**: VGG16 (pre-trained on ImageNet)
+- **Custom Layers**: Dense layers for binary classification
+- **Input Size**: 224x224x3 RGB images
+- **Output**: Binary classification (Normal/Pneumonia)
+
+### Training Data
+- **Dataset**: Chest X-ray Pneumonia Dataset from Kaggle
+- **Classes**: Normal (1,349 images), Pneumonia (3,883 images)
+- **Split**: Train/Validation/Test with data augmentation
+
+### Performance
+- **Accuracy**: ~95% on test set
+- **Processing Time**: <3 seconds per image
+- **Memory Usage**: Optimized for web deployment
+
+
+**IMPORTANT**: This tool is for educational and research purposes only. It is not intended to replace professional medical diagnosis. Always consult with a qualified healthcare provider for medical decisions. Results should not be used as the sole basis for treatment decisions.
+
+## 🤝 If you want to contribute
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+
+## 📄 License
+
+This project is open source and available under the MIT License.
+
+## 🙏 Acknowledgments
+
+- Chest X-ray dataset from Kaggle
+- VGG16 architecture from Oxford Visual Geometry Group
+- React and TensorFlow communities
+- A private project I worked on with eClinic motivated me to do this
+
+---
+
+**Built with ❤️ for the medical community**
+
+For questions or support, please open an issue on GitHub.
