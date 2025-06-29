@@ -12,10 +12,33 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
+# Debug: Print current working directory and check for model file
+print(f"Current working directory: {os.getcwd()}")
+print(f"Files in current directory: {os.listdir('.')}")
+if os.path.exists('../best_model.keras'):
+    print("✅ Model file found at ../best_model.keras")
+else:
+    print("❌ Model file not found at ../best_model.keras")
+    # Try alternative paths
+    if os.path.exists('best_model.keras'):
+        print("✅ Model file found at best_model.keras")
+    elif os.path.exists('./best_model.keras'):
+        print("✅ Model file found at ./best_model.keras")
+
 # Load the trained model
 try:
-    model = load_model('../best_model.keras')
-    print("✅ Model loaded successfully!")
+    model_path = '../best_model.keras'
+    if not os.path.exists(model_path):
+        # Try alternative paths
+        if os.path.exists('best_model.keras'):
+            model_path = 'best_model.keras'
+        elif os.path.exists('./best_model.keras'):
+            model_path = './best_model.keras'
+        else:
+            raise FileNotFoundError(f"Model file not found. Checked paths: ../best_model.keras, best_model.keras, ./best_model.keras")
+    
+    model = load_model(model_path)
+    print(f"✅ Model loaded successfully from {model_path}!")
 except Exception as e:
     print(f"❌ Error loading model: {e}")
     model = None
