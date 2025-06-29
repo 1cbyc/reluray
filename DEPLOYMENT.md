@@ -1,6 +1,6 @@
 # Deployment Guide - Pneumonia Detection AI
 
-This guide will help you deploy the Pneumonia Detection AI application to production.
+This guide covers deploying both the frontend (React) and backend (Flask API) components of the Pneumonia Detection application.
 
 ## 🚀 Quick Deploy Options
 
@@ -27,94 +27,68 @@ This guide will help you deploy the Pneumonia Detection AI application to produc
 
 ### 1. Frontend Deployment (Cloudflare Pages)
 
-#### A. Prepare Your Repository
-```bash
-# Ensure your React app builds successfully
-npm run build
+#### A. Connect to GitHub
+1. Go to [Cloudflare Pages](https://pages.cloudflare.com/)
+2. Click "Create a project"
+3. Connect your GitHub account
+4. Select the `image_classification` repository
 
-# Commit and push to GitHub
-git add .
-git commit -m "Ready for deployment"
-git push origin main
+#### B. Configure Build Settings
+- **Framework preset**: None (Custom)
+- **Build command**: `npm run build`
+- **Build output directory**: `build`
+- **Root directory**: `/` (leave empty)
+
+#### C. Set Environment Variables
+Add the following environment variable in Cloudflare Pages:
+
+```
+REACT_APP_API_URL=https://your-render-app-name.onrender.com/api
 ```
 
-#### B. Deploy to Cloudflare Pages
-1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. Click "Pages" → "Create a project"
-3. Connect your GitHub repository
-4. Configure build settings:
-   - **Framework preset**: None
-   - **Build command**: `npm run build`
-   - **Build output directory**: `build`
-   - **Root directory**: `/` (leave empty)
-5. Click "Save and Deploy"
+**Important**: Replace `your-render-app-name` with your actual Render app name.
 
-#### C. Environment Variables (Optional)
-In Cloudflare Pages settings, add:
+#### D. Deploy
+Click "Save and Deploy" to start the deployment process.
+
+### 2. Backend Deployment (Render)
+
+#### A. Connect to GitHub
+1. Go to [Render](https://render.com/)
+2. Click "New +" and select "Web Service"
+3. Connect your GitHub account
+4. Select the `image_classification` repository
+
+#### B. Configure Service Settings
+- **Name**: `pneumonia-detection-api` (or your preferred name)
+- **Environment**: Python 3
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `chmod +x start.sh && ./start.sh`
+
+#### C. Set Environment Variables
+Add these environment variables:
 ```
-REACT_APP_API_URL=https://your-backend-url.com/api
-```
-
-### 2. Backend Deployment (Railway)
-
-#### A. Prepare Backend
-```bash
-# Navigate to API directory
-cd api
-
-# Test locally first
-python app.py
+PYTHON_VERSION=3.11.5
+PORT=10000
 ```
 
-#### B. Deploy to Railway
-1. Go to [Railway.app](https://railway.app)
-2. Click "New Project" → "Deploy from GitHub repo"
-3. Select your repository
-4. Railway will auto-detect Python and install dependencies
-5. Set environment variables:
-   ```
-   PORT=5000
-   ```
-6. Deploy!
-
-#### C. Get Backend URL
-- Railway will provide a URL like: `https://your-app.railway.app`
-- Update your frontend environment variable with this URL
-
-### 3. Alternative Backend Options
-
-#### Render
-1. Go to [Render.com](https://render.com)
-2. Create new "Web Service"
-3. Connect GitHub repo
-4. Configure:
-   - **Build Command**: `pip install -r api/requirements.txt`
-   - **Start Command**: `gunicorn api.app:app`
-   - **Root Directory**: `/`
-
-#### Heroku
-1. Install Heroku CLI
-2. Create `Procfile` (already created)
-3. Deploy:
-   ```bash
-   heroku create your-app-name
-   git push heroku main
-   ```
+#### D. Deploy
+Click "Create Web Service" to start the deployment.
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-#### Frontend (.env)
-```bash
-REACT_APP_API_URL=https://your-backend-url.com/api
-```
+#### Frontend (Cloudflare Pages)
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `REACT_APP_API_URL` | Backend API URL | `https://pneumonia-detection-api.onrender.com/api` |
 
-#### Backend
-```bash
-PORT=5000
-FLASK_ENV=production
-```
+#### Backend (Render)
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `PYTHON_VERSION` | Python version | `3.11.5` |
+| `PORT` | Port number | `10000` |
 
 ### Model File
 Ensure your trained model is accessible:
@@ -123,22 +97,22 @@ Ensure your trained model is accessible:
 
 ## 🧪 Testing Deployment
 
-### 1. Health Check
+### 1. Test Backend API
+Once Render deployment is complete, test the API endpoints:
+
 ```bash
-curl https://your-backend-url.com/api/health
+# Health check
+curl https://your-render-app-name.onrender.com/api/health
+
+# Model info
+curl https://your-render-app-name.onrender.com/api/info
 ```
 
-### 2. Frontend Test
-- Visit your Cloudflare Pages URL
-- Upload a test X-ray image
-- Verify results display correctly
-
-### 3. API Test
-```bash
-curl -X POST https://your-backend-url.com/api/predict \
-  -H "Content-Type: application/json" \
-  -d '{"image": "base64_encoded_image_data"}'
-```
+### 2. Test Frontend
+Once Cloudflare Pages deployment is complete:
+1. Visit your Cloudflare Pages URL
+2. Upload a chest X-ray image
+3. Verify the prediction works
 
 ## 🚨 Troubleshooting
 
@@ -209,8 +183,8 @@ python -c "from tensorflow.keras.models import load_model; load_model('best_mode
 ## 🎉 Success!
 
 Once deployed, your app will be available at:
-- **Frontend**: `https://your-app.pages.dev`
-- **Backend**: `https://your-app.railway.app`
+- **Frontend**: `https://your-project-name.pages.dev`
+- **Backend**: `https://your-render-app-name.onrender.com/api`
 
 Share your medical AI application with the world! 🚀
 
