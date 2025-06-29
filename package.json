@@ -1,7 +1,7 @@
 {
   "name": "pneumonia-detection-ui",
   "version": "1.0.0",
-  "description": "AI-powered pneumonia detection from chest X-rays",
+  "description": "AI-powered pneumonia detection from chest X-ray images",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
@@ -45,5 +45,9 @@
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   }
 } 

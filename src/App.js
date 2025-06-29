@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Activity, Shield, Heart, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { Activity, Shield, Heart, AlertTriangle, XCircle } from 'lucide-react';
 import ImageUpload from './components/ImageUpload';
 import ResultDisplay from './components/ResultDisplay';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import { predictImage, healthCheck } from './services/api';
 
 function App() {
   const [result, setResult] = useState(null);
