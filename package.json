@@ -12,6 +12,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "framer-motion": "^10.16.4",
+    "lucide-react": "^0.263.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
