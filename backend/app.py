@@ -36,10 +36,11 @@ MODEL_INPUT_SIZE = (224, 224)
 def find_model_file():
     """Find the model file in common locations"""
     possible_paths = [
-        '../best_model.keras',  # From api/ directory
-        'best_model.keras',      # In root
+        '../best_model.keras',  # From backend/ directory (in repository root)
+        '../../best_model.keras',  # Alternative path
+        'best_model.keras',      # In current directory
         './best_model.keras',   # Current directory
-        os.path.join(os.path.dirname(os.path.dirname(__file__)), 'best_model.keras'),  # Absolute from api/
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), 'best_model.keras'),  # Absolute from backend/
     ]
     
     for path in possible_paths:
