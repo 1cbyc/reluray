@@ -48,7 +48,7 @@ const TermsOfUse = () => {
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Acceptance of Terms</h2>
               <p className="text-gray-700 leading-relaxed">
-                By accessing and using PneumoniaAI ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. 
+                By accessing and using ReluRay ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. 
                 If you do not agree to abide by the above, please do not use this service.
               </p>
             </section>
@@ -56,7 +56,7 @@ const TermsOfUse = () => {
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">2. Description of Service</h2>
               <p className="text-gray-700 leading-relaxed">
-                PneumoniaAI is a free, AI-powered tool that analyzes chest X-ray images to detect signs of pneumonia. 
+                ReluRay is a free, AI-powered tool that analyzes medical images using advanced machine learning algorithms. 
                 The service uses machine learning algorithms to provide preliminary analysis results. 
                 The Service is provided "as is" and "as available" without any warranties.
               </p>
