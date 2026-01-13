@@ -44,10 +44,10 @@ const ImageUpload = ({ onUpload, loading }) => {
       {!preview ? (
         <motion.div
           {...getRootProps()}
-          className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-200 ${
+          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 ${
             isDragActive 
-              ? 'border-medical-500 bg-medical-50' 
-              : 'border-gray-300 hover:border-medical-400 hover:bg-gray-50'
+              ? 'border-starlink-black bg-starlink-gray-50' 
+              : 'border-starlink-gray-300 hover:border-starlink-black hover:bg-starlink-gray-50'
           } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           whileHover={!loading ? { scale: 1.02 } : {}}
           whileTap={!loading ? { scale: 0.98 } : {}}
@@ -58,13 +58,13 @@ const ImageUpload = ({ onUpload, loading }) => {
             transition={{ duration: 0.2 }}
           >
             <Upload className={`w-16 h-16 mx-auto mb-4 ${
-              isDragActive ? 'text-medical-500' : 'text-gray-400'
+              isDragActive ? 'text-starlink-black' : 'text-starlink-gray-400'
             }`} />
           </motion.div>
-          <p className="text-lg font-medium text-gray-700 mb-2">
+          <p className="text-lg font-medium text-starlink-black mb-2">
             {isDragActive ? 'Drop the image here' : 'Choose an X-ray image'}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-starlink-gray-500">
             Supports JPEG, PNG, GIF, BMP (Max 10MB)
           </p>
         </motion.div>
@@ -74,16 +74,16 @@ const ImageUpload = ({ onUpload, loading }) => {
           animate={{ opacity: 1, scale: 1 }}
           className="relative"
         >
-          <div className="medical-card">
+          <div className="starlink-card">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <Image className="w-6 h-6 text-medical-500" />
-                <span className="font-medium text-gray-900">{fileName}</span>
+                <Image className="w-6 h-6 text-starlink-black" />
+                <span className="font-medium text-starlink-black">{fileName}</span>
               </div>
               {!loading && (
                 <motion.button
                   onClick={clearImage}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                  className="p-2 text-starlink-gray-400 hover:text-red-500 transition-colors"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
@@ -95,13 +95,13 @@ const ImageUpload = ({ onUpload, loading }) => {
               <img
                 src={preview}
                 alt="X-ray preview"
-                className="w-full h-64 object-contain rounded-lg border border-gray-200"
+                className="w-full h-64 object-contain rounded-lg border border-starlink-gray-200"
               />
               {loading && (
-                <div className="absolute inset-0 bg-white/80 rounded-lg flex items-center justify-center">
+                <div className="absolute inset-0 bg-starlink-white/80 rounded-lg flex items-center justify-center">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-medical-500 mx-auto mb-2"></div>
-                    <p className="text-sm text-gray-600">Processing...</p>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-starlink-black mx-auto mb-2"></div>
+                    <p className="text-sm text-starlink-gray-600">Processing...</p>
                   </div>
                 </div>
               )}
@@ -111,7 +111,7 @@ const ImageUpload = ({ onUpload, loading }) => {
       )}
 
       <div className="text-center">
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-starlink-gray-500">
           Your image is processed locally and not stored on our servers
         </p>
       </div>
