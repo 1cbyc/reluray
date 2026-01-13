@@ -1,44 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
   body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    font-family: 'Museo Sans Rounded', 'Inter', system-ui, sans-serif;
+    @apply bg-starlink-gray-50 text-starlink-black;
     min-height: 100vh;
+  }
+  
+  /* Fallback for Museo Sans Rounded - using Inter as close alternative */
+  @supports not (font-family: 'Museo Sans Rounded') {
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+    }
   }
 }
 
 @layer components {
-  .medical-card {
-    @apply bg-white rounded-2xl shadow-xl border border-gray-100 p-6;
+  .starlink-card {
+    @apply bg-starlink-white rounded-xl shadow-lg border border-starlink-gray-200 p-6;
   }
   
-  .medical-button {
-    @apply bg-medical-500 hover:bg-medical-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-medical-200;
+  .starlink-button {
+    @apply bg-starlink-black hover:bg-starlink-gray-900 text-starlink-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-starlink-gray-300;
   }
   
-  .medical-input {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200;
+  .starlink-input {
+    @apply w-full px-4 py-3 border border-starlink-gray-300 rounded-lg focus:ring-2 focus:ring-starlink-black focus:border-starlink-black transition-all duration-200 bg-starlink-white;
   }
   
   .result-card {
-    @apply medical-card border-l-4;
+    @apply starlink-card border-l-4;
   }
   
   .result-normal {
-    @apply border-health-success bg-green-50;
+    @apply border-green-500 bg-green-50;
   }
   
   .result-pneumonia {
-    @apply border-health-danger bg-red-50;
+    @apply border-red-500 bg-red-50;
   }
 }
 
 @layer utilities {
   .text-gradient {
-    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    background: linear-gradient(135deg, #000000 0%, #404040 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
