@@ -71,8 +71,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Museo Sans Rounded', 'system-ui', 'sans-serif'],
-        'museo': ['Museo Sans Rounded', 'system-ui', 'sans-serif'],
+        sans: ['Poppins', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
