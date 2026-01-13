@@ -125,7 +125,7 @@ function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              Pneumonia Detection AI
+              ReluRay
             </motion.h1>
             <motion.p 
               className="text-xl text-starlink-gray-600 mb-8 max-w-2xl mx-auto"
@@ -133,8 +133,7 @@ function HomePage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              Advanced AI-powered analysis of chest X-ray images for instant pneumonia detection. 
-              Free, accurate, and confidential.
+              Advanced AI-powered medical image analysis. Instant, accurate, and confidential.
             </motion.p>
             
             {/* Features */}
@@ -187,7 +186,7 @@ function HomePage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-starlink-black"></div>
                   </div>
                   <h3 className="text-xl font-semibold text-starlink-black mb-2">Analyzing Image...</h3>
-                  <p className="text-starlink-gray-600">Our AI is examining your X-ray for signs of pneumonia</p>
+                  <p className="text-starlink-gray-600">Our AI is analyzing your medical image</p>
                 </Card>
               </motion.div>
             )}
