@@ -26,7 +26,7 @@ const Header = () => {
           </motion.div>
           
           <motion.a
-            href="https://github.com/1cbyc/image_classification"
+            href="https://github.com/1cbyc/reluray"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center space-x-2 text-gray-600 hover:text-medical-600 transition-colors"

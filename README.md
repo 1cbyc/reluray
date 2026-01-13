@@ -53,8 +53,8 @@ It's worth noting that this project uses a Convolutional Neural Network (CNN) bu
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/1cbyc/image_classification.git
-   cd image_classification
+   git clone https://github.com/1cbyc/reluray.git
+   cd reluray
    ```
 
 2. **Create a Virtual Environment**:

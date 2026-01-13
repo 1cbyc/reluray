@@ -186,7 +186,7 @@ const TermsOfUse = () => {
               <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                 <p className="text-gray-700">
                   <strong>Email:</strong> ei@nsisong.com<br />
-                  <strong>GitHub:</strong> <a href="https://github.com/1cbyc/image_classification" target="_blank" rel="noopener noreferrer" className="text-medical-600 hover:text-medical-700">github.com/1cbyc/image_classification</a><br />
+                  <strong>GitHub:</strong> <a href="https://github.com/1cbyc/reluray" target="_blank" rel="noopener noreferrer" className="text-medical-600 hover:text-medical-700">github.com/1cbyc/reluray</a><br />
                   <strong>Developer:</strong> <a href="https://github.com/1cbyc" target="_blank" rel="noopener noreferrer" className="text-medical-600 hover:text-medical-700">Isaac Emmanuel</a>
                 </p>
               </div>

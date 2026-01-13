@@ -26,7 +26,7 @@ const Footer = () => {
             </p>
             <div className="flex items-center justify-center md:justify-start space-x-4">
               <motion.a
-                href="https://github.com/1cbyc/image_classification"
+                href="https://github.com/1cbyc/reluray"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-medical-600 transition-colors"
