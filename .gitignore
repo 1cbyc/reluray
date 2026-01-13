@@ -361,3 +361,6 @@ hide.c
 hey
 *.txt
 ._*
+*.sh
+*.ps1
+*.md
