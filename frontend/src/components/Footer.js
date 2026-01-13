@@ -21,7 +21,7 @@ const Footer = () => {
               <span className="text-xl font-bold text-starlink-black">ReluRay</span>
             </div>
             <p className="text-starlink-gray-600 text-sm mb-4">
-              Free AI-powered pneumonia detection from chest X-ray images. 
+              Free AI-powered medical image analysis. 
               Built with cutting-edge deep learning technology.
             </p>
             <div className="flex items-center justify-center md:justify-start space-x-4">
