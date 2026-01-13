@@ -9,7 +9,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 def build_model(input_shape=(224, 224, 3)):
     # let me load the VGG16 model with the weights i downloaded already
-    weights_path = 'weights/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+    weights_path = '../../weights/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
     # base_model = VGG16(weights='imagenet', include_top=False, input_shape=input_shape)
     base_model = VGG16(weights=weights_path, include_top=False, input_shape=input_shape)
 
@@ -35,7 +35,7 @@ def train_model(model, train_data_dir, val_data_dir, batch_size=32, epochs=10):
 
     # checkpoint = ModelCheckpoint('best_model.h5', monitor='val_loss', save_best_only=True)
     # i decided to change this to allow me train while saving the model in the .keras format instead of the .h5
-    checkpoint = ModelCheckpoint('best_model.keras', monitor='val_loss', save_best_only=True)
+    checkpoint = ModelCheckpoint('../../best_model.keras', monitor='val_loss', save_best_only=True)
 
     history = model.fit(train_generator, epochs=epochs, validation_data=val_generator, callbacks=[checkpoint])
     return history
