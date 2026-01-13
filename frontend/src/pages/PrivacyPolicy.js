@@ -33,7 +33,7 @@ const PrivacyPolicy = () => {
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Introduction</h2>
               <p className="text-gray-700 leading-relaxed">
-                Welcome to PneumoniaAI, a free AI-powered tool for detecting pneumonia from chest X-ray images. 
+                Welcome to ReluRay, a free AI-powered tool for medical image analysis. 
                 This Privacy Policy explains how we handle your data when you use our service. 
                 We are committed to protecting your privacy and ensuring the security of your information.
               </p>
