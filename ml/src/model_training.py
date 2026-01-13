@@ -9,9 +9,19 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 def build_model(input_shape=(224, 224, 3)):
     # let me load the VGG16 model with the weights i downloaded already
-    weights_path = '../../weights/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
-    # base_model = VGG16(weights='imagenet', include_top=False, input_shape=input_shape)
-    base_model = VGG16(weights=weights_path, include_top=False, input_shape=input_shape)
+    import os
+    # Get absolute path to weights file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    weights_path = os.path.join(current_dir, '..', '..', 'weights', 'vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
+    weights_path = os.path.abspath(weights_path)
+    
+    if not os.path.exists(weights_path):
+        # Fallback to using ImageNet weights if local weights not found
+        print(f"⚠️  Local weights not found at {weights_path}, using ImageNet weights")
+        base_model = VGG16(weights='imagenet', include_top=False, input_shape=input_shape)
+    else:
+        # base_model = VGG16(weights='imagenet', include_top=False, input_shape=input_shape)
+        base_model = VGG16(weights=weights_path, include_top=False, input_shape=input_shape)
 
     model = Sequential([
         base_model,
@@ -35,7 +45,10 @@ def train_model(model, train_data_dir, val_data_dir, batch_size=32, epochs=10):
 
     # checkpoint = ModelCheckpoint('best_model.h5', monitor='val_loss', save_best_only=True)
     # i decided to change this to allow me train while saving the model in the .keras format instead of the .h5
-    checkpoint = ModelCheckpoint('../../best_model.keras', monitor='val_loss', save_best_only=True)
+    import os
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    model_path = os.path.join(base_dir, 'best_model.keras')
+    checkpoint = ModelCheckpoint(model_path, monitor='val_loss', save_best_only=True)
 
     history = model.fit(train_generator, epochs=epochs, validation_data=val_generator, callbacks=[checkpoint])
     return history
