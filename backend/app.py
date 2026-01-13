@@ -1,16 +1,17 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
+from typing import Optional
 import os
 import numpy as np
 from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.preprocessing.image import img_to_array
 from PIL import Image
 import io
 import base64
 import logging
-import hashlib
 from datetime import datetime
-from functools import wraps
 import time
 
 # Configure logging
@@ -20,17 +21,68 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+# Initialize FastAPI app
+app = FastAPI(
+    title="ReluRay API",
+    description="AI-powered medical image analysis API",
+    version="1.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+)
 
-# Configure CORS - allow all origins in development, restrict in production
-cors_origins = os.environ.get('CORS_ORIGINS', '*')
-if cors_origins == '*':
+# Configure CORS
+cors_origins = os.environ.get('CORS_ORIGINS', '*').split(',')
+if cors_origins == ['*']:
     logger.warning("CORS is set to allow all origins. For production, set CORS_ORIGINS environment variable.")
-CORS(app, origins=cors_origins.split(',') if cors_origins != '*' else ['*'])
+    allow_origins = ['*']
+else:
+    allow_origins = cors_origins
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allow_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Configuration
 MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB
 MODEL_INPUT_SIZE = (224, 224)
+
+# Pydantic models for request/response validation
+class PredictRequest(BaseModel):
+    image: str = Field(..., description="Base64 encoded image data")
+
+class HealthResponse(BaseModel):
+    status: str
+    model_loaded: bool
+    timestamp: str
+    version: str
+
+class PredictResponse(BaseModel):
+    prediction: str
+    confidence: float
+    raw_confidence: Optional[float] = None
+    timestamp: str
+    processing_time: float
+    status: str
+
+class ErrorResponse(BaseModel):
+    error: str
+    status: str
+
+class ModelInfoResponse(BaseModel):
+    model_name: str
+    architecture: str
+    training_data: str
+    classes: list
+    input_size: str
+    framework: str
+    model_loaded: bool
+    model_input_shape: Optional[str] = None
+    model_output_shape: Optional[str] = None
+    status: str
 
 # Model loading with better path resolution
 def find_model_file():
@@ -71,7 +123,7 @@ else:
     logger.error(f"Current working directory: {os.getcwd()}")
     logger.error(f"Files in current directory: {os.listdir('.')}")
 
-def preprocess_image(image_data):
+def preprocess_image(image_data: str):
     """Preprocess image for model prediction"""
     try:
         # Validate input
@@ -126,56 +178,40 @@ def preprocess_image(image_data):
         logger.error(f"Error preprocessing image: {e}", exc_info=True)
         return None
 
-@app.route('/api/health', methods=['GET'])
-def health_check():
+@app.get("/api/health", response_model=HealthResponse, tags=["Health"])
+async def health_check():
     """Health check endpoint for monitoring"""
-    return jsonify({
-        'status': 'healthy',
-        'model_loaded': model is not None,
-        'timestamp': datetime.now().isoformat(),
-        'version': '1.0.0'
-    }), 200
+    return HealthResponse(
+        status='healthy',
+        model_loaded=model is not None,
+        timestamp=datetime.now().isoformat(),
+        version='1.0.0'
+    )
 
-@app.route('/api/predict', methods=['POST'])
-def predict():
+@app.post("/api/predict", response_model=PredictResponse, tags=["Prediction"])
+async def predict(request: PredictRequest):
     """Predict pneumonia from uploaded image"""
     start_time = time.time()
     
     if model is None:
         logger.error("Prediction attempted but model is not loaded")
-        return jsonify({
-            'error': 'Model not loaded. Please check server logs.',
-            'status': 'error'
-        }), 503
+        raise HTTPException(
+            status_code=503,
+            detail='Model not loaded. Please check server logs.'
+        )
     
     try:
-        # Validate request
-        if not request.is_json:
-            return jsonify({
-                'error': 'Request must be JSON',
-                'status': 'error'
-            }), 400
-        
-        # Get image data from request
-        data = request.get_json()
-        if not data or 'image' not in data:
-            logger.warning("Prediction request missing image data")
-            return jsonify({
-                'error': 'No image data provided. Please include "image" field in request body.',
-                'status': 'error'
-            }), 400
-        
-        image_data = data['image']
+        image_data = request.image
         
         # Preprocess image
         logger.info("Preprocessing image...")
         processed_image = preprocess_image(image_data)
         if processed_image is None:
             logger.warning("Image preprocessing failed")
-            return jsonify({
-                'error': 'Failed to process image. Please ensure the image is valid and under 10MB.',
-                'status': 'error'
-            }), 400
+            raise HTTPException(
+                status_code=400,
+                detail='Failed to process image. Please ensure the image is valid and under 10MB.'
+            )
         
         # Make prediction
         logger.info("Running model prediction...")
@@ -197,30 +233,26 @@ def predict():
         
         logger.info(f"Prediction completed: {result} (confidence: {final_confidence:.3f}, time: {total_time:.2f}s)")
         
-        return jsonify({
-            'prediction': result,
-            'confidence': round(final_confidence, 3),
-            'raw_confidence': round(confidence, 3),
-            'timestamp': datetime.now().isoformat(),
-            'processing_time': round(total_time, 3),
-            'status': 'success'
-        }), 200
+        return PredictResponse(
+            prediction=result,
+            confidence=round(final_confidence, 3),
+            raw_confidence=round(confidence, 3),
+            timestamp=datetime.now().isoformat(),
+            processing_time=round(total_time, 3),
+            status='success'
+        )
         
+    except HTTPException:
+        raise
     except ValueError as e:
         logger.error(f"Value error in prediction: {e}", exc_info=True)
-        return jsonify({
-            'error': 'Invalid request data',
-            'status': 'error'
-        }), 400
+        raise HTTPException(status_code=400, detail='Invalid request data')
     except Exception as e:
         logger.error(f"Unexpected error in prediction: {e}", exc_info=True)
-        return jsonify({
-            'error': 'Failed to analyze image. Please try again.',
-            'status': 'error'
-        }), 500
+        raise HTTPException(status_code=500, detail='Failed to analyze image. Please try again.')
 
-@app.route('/api/info', methods=['GET'])
-def model_info():
+@app.get("/api/info", response_model=ModelInfoResponse, tags=["Info"])
+async def model_info():
     """Get model information"""
     info = {
         'model_name': 'VGG16 Transfer Learning',
@@ -237,37 +269,33 @@ def model_info():
         info['model_input_shape'] = str(model.input_shape)
         info['model_output_shape'] = str(model.output_shape)
     
-    return jsonify(info), 200
+    return ModelInfoResponse(**info)
 
-# Error handlers
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify({
-        'error': 'Endpoint not found',
-        'status': 'error'
-    }), 404
-
-@app.errorhandler(405)
-def method_not_allowed(error):
-    return jsonify({
-        'error': 'Method not allowed',
-        'status': 'error'
-    }), 405
-
-@app.errorhandler(500)
-def internal_error(error):
-    logger.error(f"Internal server error: {error}", exc_info=True)
-    return jsonify({
-        'error': 'Internal server error',
-        'status': 'error'
-    }), 500
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Global exception handler"""
+    logger.error(f"Unhandled exception: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={
+            'error': 'Internal server error',
+            'status': 'error'
+        }
+    )
 
 if __name__ == '__main__':
+    import uvicorn
     port = int(os.environ.get('PORT', 5000))
-    debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    debug = os.environ.get('FASTAPI_DEBUG', 'False').lower() == 'true'
     
-    logger.info(f"Starting Flask application on port {port}")
+    logger.info(f"Starting FastAPI application on port {port}")
     logger.info(f"Debug mode: {debug}")
     logger.info(f"Model loaded: {model is not None}")
     
-    app.run(host='0.0.0.0', port=port, debug=debug) 
+    uvicorn.run(
+        "app:app",
+        host="0.0.0.0",
+        port=port,
+        reload=debug,
+        log_level="info"
+    )
