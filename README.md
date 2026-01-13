@@ -218,20 +218,33 @@ For detailed deployment instructions, see the deployment documentation in the re
 
 ### Development Setup
 
-**Frontend:**
+**Quick Start (Automated):**
 ```bash
-npm install
-npm start  # Runs on http://localhost:3000
+# Run setup script (handles Python 3.12 and all dependencies)
+./setup.sh
+
+# Then activate and run
+source venv/bin/activate
+cd api && python app.py  # Backend on http://localhost:5000
+npm start  # Frontend on http://localhost:3000 (new terminal)
 ```
 
-**Backend:**
+**Manual Setup:**
 ```bash
-python3 -m venv venv
+# 1. Python 3.12 environment (required for TensorFlow)
+python3.12 -m venv venv  # or use pyenv: pyenv local 3.12.12
 source venv/bin/activate
 pip install -r requirements.txt
-cd api
-python app.py  # Runs on http://localhost:5000
+
+# 2. Frontend
+npm install
+
+# 3. Run
+cd api && python app.py  # Backend
+npm start  # Frontend (new terminal)
 ```
+
+**Note**: Python 3.11 or 3.12 is required. TensorFlow doesn't support Python 3.13+ yet.
 
 
 ## License
