@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -56,16 +56,9 @@
     @apply border-border;
   }
   body {
-    font-family: 'Museo Sans Rounded', 'Inter', system-ui, sans-serif;
+    font-family: 'Poppins', system-ui, sans-serif;
     @apply bg-starlink-gray-50 text-starlink-black;
     min-height: 100vh;
-  }
-  
-  /* Fallback for Museo Sans Rounded - using Inter as close alternative */
-  @supports not (font-family: 'Museo Sans Rounded') {
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-    }
   }
 }
 
