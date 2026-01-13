@@ -73,13 +73,37 @@ else:
 def preprocess_image(image_data):
     """Preprocess image for model prediction"""
     try:
-        # Convert base64 to image
-        if isinstance(image_data, str) and image_data.startswith('data:image'):
-            # Remove data URL prefix
+        # Validate input
+        if not image_data or not isinstance(image_data, str):
+            logger.error("Invalid image data: not a string")
+            return None
+        
+        # Extract base64 data
+        if image_data.startswith('data:image'):
+            # Remove data URL prefix (e.g., "data:image/jpeg;base64,")
             image_data = image_data.split(',')[1]
         
         # Decode base64
-        image_bytes = base64.b64decode(image_data)
+        try:
+            image_bytes = base64.b64decode(image_data, validate=True)
+        except Exception as e:
+            logger.error(f"Invalid base64 encoding: {e}")
+            return None
+        
+        # Validate image size
+        if len(image_bytes) > MAX_IMAGE_SIZE:
+            logger.warning(f"Image too large: {len(image_bytes)} bytes (max: {MAX_IMAGE_SIZE})")
+            return None
+        
+        # Open and validate image
+        try:
+            image = Image.open(io.BytesIO(image_bytes))
+            image.verify()  # Verify it's a valid image
+        except Exception as e:
+            logger.error(f"Invalid image file: {e}")
+            return None
+        
+        # Reopen image (verify() closes it)
         image = Image.open(io.BytesIO(image_bytes))
         
         # Convert to RGB if necessary
@@ -87,57 +111,77 @@ def preprocess_image(image_data):
             image = image.convert('RGB')
         
         # Resize to model input size
-        image = image.resize((224, 224))
+        image = image.resize(MODEL_INPUT_SIZE, Image.Resampling.LANCZOS)
         
         # Convert to array and normalize
         img_array = img_to_array(image)
         img_array = img_array / 255.0
         img_array = np.expand_dims(img_array, axis=0)
         
+        logger.debug(f"Image preprocessed: shape={img_array.shape}")
         return img_array
+        
     except Exception as e:
-        print(f"Error preprocessing image: {e}")
+        logger.error(f"Error preprocessing image: {e}", exc_info=True)
         return None
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
-    """Health check endpoint"""
+    """Health check endpoint for monitoring"""
     return jsonify({
         'status': 'healthy',
         'model_loaded': model is not None,
-        'timestamp': datetime.now().isoformat()
-    })
+        'timestamp': datetime.now().isoformat(),
+        'version': '1.0.0'
+    }), 200
 
 @app.route('/api/predict', methods=['POST'])
 def predict():
     """Predict pneumonia from uploaded image"""
+    start_time = time.time()
+    
     if model is None:
+        logger.error("Prediction attempted but model is not loaded")
         return jsonify({
-            'error': 'Model not loaded',
+            'error': 'Model not loaded. Please check server logs.',
             'status': 'error'
-        }), 500
+        }), 503
     
     try:
+        # Validate request
+        if not request.is_json:
+            return jsonify({
+                'error': 'Request must be JSON',
+                'status': 'error'
+            }), 400
+        
         # Get image data from request
         data = request.get_json()
         if not data or 'image' not in data:
+            logger.warning("Prediction request missing image data")
             return jsonify({
-                'error': 'No image data provided',
+                'error': 'No image data provided. Please include "image" field in request body.',
                 'status': 'error'
             }), 400
         
         image_data = data['image']
         
         # Preprocess image
+        logger.info("Preprocessing image...")
         processed_image = preprocess_image(image_data)
         if processed_image is None:
+            logger.warning("Image preprocessing failed")
             return jsonify({
-                'error': 'Failed to process image',
+                'error': 'Failed to process image. Please ensure the image is valid and under 10MB.',
                 'status': 'error'
             }), 400
         
         # Make prediction
-        prediction = model.predict(processed_image)
+        logger.info("Running model prediction...")
+        prediction_start = time.time()
+        prediction = model.predict(processed_image, verbose=0)
+        prediction_time = time.time() - prediction_start
+        
         confidence = float(prediction[0][0])
         
         # Determine result
@@ -148,34 +192,81 @@ def predict():
             result = 'Normal'
             final_confidence = 1 - confidence
         
+        total_time = time.time() - start_time
+        
+        logger.info(f"Prediction completed: {result} (confidence: {final_confidence:.3f}, time: {total_time:.2f}s)")
+        
         return jsonify({
             'prediction': result,
             'confidence': round(final_confidence, 3),
             'raw_confidence': round(confidence, 3),
             'timestamp': datetime.now().isoformat(),
+            'processing_time': round(total_time, 3),
             'status': 'success'
-        })
+        }), 200
         
-    except Exception as e:
-        print(f"Prediction error: {e}")
+    except ValueError as e:
+        logger.error(f"Value error in prediction: {e}", exc_info=True)
         return jsonify({
-            'error': 'Failed to analyze image',
+            'error': 'Invalid request data',
+            'status': 'error'
+        }), 400
+    except Exception as e:
+        logger.error(f"Unexpected error in prediction: {e}", exc_info=True)
+        return jsonify({
+            'error': 'Failed to analyze image. Please try again.',
             'status': 'error'
         }), 500
 
 @app.route('/api/info', methods=['GET'])
 def model_info():
     """Get model information"""
-    return jsonify({
+    info = {
         'model_name': 'VGG16 Transfer Learning',
         'architecture': 'Convolutional Neural Network',
         'training_data': 'Chest X-ray Pneumonia Dataset',
         'classes': ['Normal', 'Pneumonia'],
         'input_size': '224x224x3',
         'framework': 'TensorFlow/Keras',
+        'model_loaded': model is not None,
         'status': 'success'
-    })
+    }
+    
+    if model is not None:
+        info['model_input_shape'] = str(model.input_shape)
+        info['model_output_shape'] = str(model.output_shape)
+    
+    return jsonify(info), 200
+
+# Error handlers
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        'error': 'Endpoint not found',
+        'status': 'error'
+    }), 404
+
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return jsonify({
+        'error': 'Method not allowed',
+        'status': 'error'
+    }), 405
+
+@app.errorhandler(500)
+def internal_error(error):
+    logger.error(f"Internal server error: {error}", exc_info=True)
+    return jsonify({
+        'error': 'Internal server error',
+        'status': 'error'
+    }), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True) 
+    debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    
+    logger.info(f"Starting Flask application on port {port}")
+    logger.info(f"Debug mode: {debug}")
+    logger.info(f"Model loaded: {model is not None}")
+    
+    app.run(host='0.0.0.0', port=port, debug=debug) 
