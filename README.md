@@ -148,7 +148,7 @@ okay, seeing i am working an update for 2025:
 
 ReluRay is deployed on:
 - **Frontend**: [Vercel](https://vercel.com) - Global CDN, automatic deployments
-- **Backend**: [Railway](https://railway.app) - Flask API with Gunicorn
+- **Backend**: [Railway](https://railway.app) - FastAPI with Uvicorn
 
 For detailed deployment instructions, see the deployment documentation in the repository.
 
@@ -176,11 +176,13 @@ For detailed deployment instructions, see the deployment documentation in the re
 - **Deployment**: Vercel
 
 ### Backend Stack
-- **Framework**: Flask 2.3.3
-- **WSGI Server**: Gunicorn (production-ready)
+- **Framework**: FastAPI 0.109.0
+- **ASGI Server**: Uvicorn 0.27.0 (production-ready)
 - **ML Framework**: TensorFlow/Keras 2.16.1
+- **Validation**: Pydantic 2.5.3
 - **Deployment**: Railway
-- **Production Ready**: Flask with Gunicorn WSGI server
+- **Production Ready**: FastAPI with Uvicorn ASGI server
+- **API Documentation**: Automatic OpenAPI docs at `/api/docs`
 
 ### Model Architecture
 - **Base Model**: VGG16 (pre-trained on ImageNet)
