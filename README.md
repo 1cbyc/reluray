@@ -137,14 +137,50 @@ From where I'm standing, I think I need to make a webpage to allow people just u
 
 okay, seeing i am working an update for 2025:
 
-## 🎯 Usage
+## Usage
 
 1. **Upload Image**: Drag & drop or click to upload a chest X-ray
 2. **AI Analysis**: Our VGG16 model analyzes the image in seconds
 3. **Get Results**: View prediction (Normal/Pneumonia) with confidence score
 4. **Next Steps**: Follow medical recommendations based on results
 
-## 🔬 Technical Details
+## Deployment
+
+ReluRay is deployed on:
+- **Frontend**: [Vercel](https://vercel.com) - Global CDN, automatic deployments
+- **Backend**: [Railway](https://railway.app) - Flask API with Gunicorn
+
+For detailed deployment instructions, see the deployment documentation in the repository.
+
+### Quick Deploy
+
+1. **Frontend (Vercel)**:
+   - Connect GitHub repository
+   - Set `REACT_APP_API_URL` environment variable
+   - Deploy automatically on push
+
+2. **Backend (Railway)**:
+   - Connect GitHub repository
+   - Railway auto-detects Python
+   - Model file (`best_model.keras`) must be in repo
+   - Deploy automatically on push
+
+## Technical Details
+
+### Frontend Stack
+- **Framework**: React 18 with Create React App
+- **UI Components**: shadcn/ui (Radix UI + Tailwind CSS)
+- **Styling**: Tailwind CSS with Starlink-inspired design
+- **Font**: Poppins (Google Fonts)
+- **Animations**: Framer Motion
+- **Deployment**: Vercel
+
+### Backend Stack
+- **Framework**: Flask 2.3.3
+- **WSGI Server**: Gunicorn (production-ready)
+- **ML Framework**: TensorFlow/Keras 2.16.1
+- **Deployment**: Railway
+- **Production Ready**: Flask with Gunicorn WSGI server
 
 ### Model Architecture
 - **Base Model**: VGG16 (pre-trained on ImageNet)
@@ -156,16 +192,23 @@ okay, seeing i am working an update for 2025:
 - **Dataset**: Chest X-ray Pneumonia Dataset from Kaggle
 - **Classes**: Normal (1,349 images), Pneumonia (3,883 images)
 - **Split**: Train/Validation/Test with data augmentation
+- **More Datasets**: Additional medical imaging datasets available in repository
 
 ### Performance
 - **Accuracy**: ~95% on test set
 - **Processing Time**: <3 seconds per image
 - **Memory Usage**: Optimized for web deployment
 
+### System Design
+- **Architecture**: Comprehensive system design documentation available in repository
+- **Scalability**: Designed for 1000+ concurrent users
+- **Security**: CORS, HTTPS, input validation
+
 
 **IMPORTANT**: This tool is for educational and research purposes only. It is not intended to replace professional medical diagnosis. Always consult with a qualified healthcare provider for medical decisions. Results should not be used as the sole basis for treatment decisions.
 
-## 🤝 If you want to contribute
+
+## If you want to contribute
 
 1. Fork the repository
 2. Create a feature branch
@@ -173,16 +216,33 @@ okay, seeing i am working an update for 2025:
 4. Test thoroughly
 5. Submit a pull request
 
+### Development Setup
 
-## 📄 License
+**Frontend:**
+```bash
+npm install
+npm start  # Runs on http://localhost:3000
+```
+
+**Backend:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cd api
+python app.py  # Runs on http://localhost:5000
+```
+
+
+## License
 
 This project is open source and available under the MIT License.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Chest X-ray dataset from Kaggle
 - VGG16 architecture from Oxford Visual Geometry Group
-- React and TensorFlow communities
+- React and TensorFlow communities on stack overflow, thank you o!
 - A private project I worked on with eClinic motivated me to do this
 
 ---
