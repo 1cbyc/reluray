@@ -78,7 +78,7 @@ function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-medical-50 to-medical-100">
+    <div className="min-h-screen bg-starlink-gray-50">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -93,10 +93,11 @@ function HomePage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="medical-card mb-6 text-center"
             >
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-medical-500 mx-auto mb-2"></div>
-              <p className="text-sm text-gray-600">Checking AI service...</p>
+              <Card className="mb-6 text-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-starlink-black mx-auto mb-2"></div>
+                <p className="text-sm text-starlink-gray-600">Checking AI service...</p>
+              </Card>
             </motion.div>
           )}
 
@@ -104,15 +105,15 @@ function HomePage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="medical-card mb-6 border-l-4 border-health-warning bg-yellow-50"
+              className="mb-6"
             >
-              <div className="flex items-center">
-                <AlertTriangle className="w-5 h-5 text-health-warning mr-3" />
-                <div>
-                  <h3 className="text-sm font-semibold text-yellow-800">Demo Mode</h3>
-                  <p className="text-xs text-yellow-700">AI service unavailable. Running in demo mode with simulated results.</p>
-                </div>
-              </div>
+              <Alert variant="warning">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Demo Mode</AlertTitle>
+                <AlertDescription>
+                  AI service unavailable. Running in demo mode with simulated results.
+                </AlertDescription>
+              </Alert>
             </motion.div>
           )}
 
@@ -127,7 +128,7 @@ function HomePage() {
               Pneumonia Detection AI
             </motion.h1>
             <motion.p 
-              className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto"
+              className="text-xl text-starlink-gray-600 mb-8 max-w-2xl mx-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
@@ -143,21 +144,21 @@ function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
-              <div className="medical-card text-center">
-                <Activity className="w-12 h-12 text-medical-500 mx-auto mb-4" />
+              <Card className="text-center">
+                <Activity className="w-12 h-12 text-starlink-black mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Instant Results</h3>
-                <p className="text-gray-600">Get analysis results in seconds</p>
-              </div>
-              <div className="medical-card text-center">
-                <Shield className="w-12 h-12 text-medical-500 mx-auto mb-4" />
+                <p className="text-starlink-gray-600">Get analysis results in seconds</p>
+              </Card>
+              <Card className="text-center">
+                <Shield className="w-12 h-12 text-starlink-black mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">100% Free</h3>
-                <p className="text-gray-600">No cost, no registration required</p>
-              </div>
-              <div className="medical-card text-center">
-                <Heart className="w-12 h-12 text-medical-500 mx-auto mb-4" />
+                <p className="text-starlink-gray-600">No cost, no registration required</p>
+              </Card>
+              <Card className="text-center">
+                <Activity className="w-12 h-12 text-starlink-black mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Medical Grade</h3>
-                <p className="text-gray-600">Trained on thousands of X-rays</p>
-              </div>
+                <p className="text-starlink-gray-600">Trained on thousands of X-rays</p>
+              </Card>
             </motion.div>
           </div>
 
@@ -166,9 +167,11 @@ function HomePage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.8 }}
-            className="medical-card mb-8"
+            className="mb-8"
           >
-            <ImageUpload onUpload={handleImageUpload} loading={loading} />
+            <Card>
+              <ImageUpload onUpload={handleImageUpload} loading={loading} />
+            </Card>
           </motion.div>
 
           {/* Results Section */}
@@ -178,13 +181,14 @@ function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="medical-card text-center"
               >
-                <div className="flex items-center justify-center mb-4">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-500"></div>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">Analyzing Image...</h3>
-                <p className="text-gray-600">Our AI is examining your X-ray for signs of pneumonia</p>
+                <Card className="text-center">
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-starlink-black"></div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-starlink-black mb-2">Analyzing Image...</h3>
+                  <p className="text-starlink-gray-600">Our AI is examining your X-ray for signs of pneumonia</p>
+                </Card>
               </motion.div>
             )}
 
@@ -193,15 +197,13 @@ function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="medical-card border-l-4 border-health-danger bg-red-50"
+                className="mb-6"
               >
-                <div className="flex items-center">
-                  <XCircle className="w-6 h-6 text-health-danger mr-3" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-red-800">Analysis Failed</h3>
-                    <p className="text-red-600">{error}</p>
-                  </div>
-                </div>
+                <Alert variant="destructive">
+                  <XCircle className="h-4 w-4" />
+                  <AlertTitle>Analysis Failed</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
               </motion.div>
             )}
 
@@ -221,19 +223,17 @@ function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="medical-card mt-8 bg-yellow-50 border-l-4 border-health-warning"
+            className="mt-8"
           >
-            <div className="flex items-start">
-              <AlertTriangle className="w-6 h-6 text-health-warning mr-3 mt-1 flex-shrink-0" />
-              <div>
-                <h3 className="text-lg font-semibold text-yellow-800 mb-2">Important Disclaimer</h3>
-                <p className="text-yellow-700 text-sm leading-relaxed">
-                  This tool is for educational and research purposes only. It is not intended to replace professional medical diagnosis. 
-                  Always consult with a qualified healthcare provider for medical decisions. Results should not be used as the sole basis 
-                  for treatment decisions.
-                </p>
-              </div>
-            </div>
+            <Alert variant="warning">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Important Disclaimer</AlertTitle>
+              <AlertDescription>
+                This tool is for educational and research purposes only. It is not intended to replace professional medical diagnosis. 
+                Always consult with a qualified healthcare provider for medical decisions. Results should not be used as the sole basis 
+                for treatment decisions.
+              </AlertDescription>
+            </Alert>
           </motion.div>
         </motion.div>
       </main>
