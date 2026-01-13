@@ -7,41 +7,68 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from PIL import Image
 import io
 import base64
+import logging
+import hashlib
 from datetime import datetime
+from functools import wraps
+import time
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for React frontend
 
-# Debug: Print current working directory and check for model file
-print(f"Current working directory: {os.getcwd()}")
-print(f"Files in current directory: {os.listdir('.')}")
-if os.path.exists('../best_model.keras'):
-    print("✅ Model file found at ../best_model.keras")
-else:
-    print("❌ Model file not found at ../best_model.keras")
-    # Try alternative paths
-    if os.path.exists('best_model.keras'):
-        print("✅ Model file found at best_model.keras")
-    elif os.path.exists('./best_model.keras'):
-        print("✅ Model file found at ./best_model.keras")
+# Configure CORS - allow all origins in development, restrict in production
+cors_origins = os.environ.get('CORS_ORIGINS', '*')
+if cors_origins == '*':
+    logger.warning("CORS is set to allow all origins. For production, set CORS_ORIGINS environment variable.")
+CORS(app, origins=cors_origins.split(',') if cors_origins != '*' else ['*'])
+
+# Configuration
+MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB
+MODEL_INPUT_SIZE = (224, 224)
+
+# Model loading with better path resolution
+def find_model_file():
+    """Find the model file in common locations"""
+    possible_paths = [
+        '../best_model.keras',  # From api/ directory
+        'best_model.keras',      # In root
+        './best_model.keras',   # Current directory
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), 'best_model.keras'),  # Absolute from api/
+    ]
+    
+    for path in possible_paths:
+        if os.path.exists(path):
+            logger.info(f"Model file found at: {os.path.abspath(path)}")
+            return path
+    
+    return None
 
 # Load the trained model
-try:
-    model_path = '../best_model.keras'
-    if not os.path.exists(model_path):
-        # Try alternative paths
-        if os.path.exists('best_model.keras'):
-            model_path = 'best_model.keras'
-        elif os.path.exists('./best_model.keras'):
-            model_path = './best_model.keras'
-        else:
-            raise FileNotFoundError(f"Model file not found. Checked paths: ../best_model.keras, best_model.keras, ./best_model.keras")
-    
-    model = load_model(model_path)
-    print(f"✅ Model loaded successfully from {model_path}!")
-except Exception as e:
-    print(f"❌ Error loading model: {e}")
-    model = None
+model = None
+model_path = find_model_file()
+
+if model_path:
+    try:
+        logger.info(f"Loading model from: {model_path}")
+        model = load_model(model_path)
+        logger.info("✅ Model loaded successfully!")
+        
+        # Log model summary
+        logger.info(f"Model input shape: {model.input_shape}")
+        logger.info(f"Model output shape: {model.output_shape}")
+    except Exception as e:
+        logger.error(f"❌ Error loading model: {e}", exc_info=True)
+        model = None
+else:
+    logger.error("❌ Model file not found in any expected location")
+    logger.error(f"Current working directory: {os.getcwd()}")
+    logger.error(f"Files in current directory: {os.listdir('.')}")
 
 def preprocess_image(image_data):
     """Preprocess image for model prediction"""
