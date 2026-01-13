@@ -1,8 +1,18 @@
 #!/bin/bash
 echo "Starting Flask application..."
 echo "Current directory: $(pwd)"
-echo "Files in current directory: $(ls -la)"
 echo "PORT environment variable: $PORT"
 
-# Start gunicorn
-exec gunicorn --bind 0.0.0.0:$PORT api.app:app 
+# Set default port if not provided
+PORT=${PORT:-5000}
+
+# Start gunicorn with production settings
+exec gunicorn \
+    --bind 0.0.0.0:$PORT \
+    --workers 4 \
+    --threads 2 \
+    --timeout 120 \
+    --access-logfile - \
+    --error-logfile - \
+    --log-level info \
+    api.app:app 
