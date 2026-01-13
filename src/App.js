@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Shield, Heart, AlertTriangle, XCircle } from 'lucide-react';
+import { Activity, Shield, AlertTriangle, XCircle } from 'lucide-react';
 import ImageUpload from './components/ImageUpload';
 import ResultDisplay from './components/ResultDisplay';
 import Header from './components/Header';
@@ -9,6 +9,8 @@ import Footer from './components/Footer';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import { predictImage, healthCheck } from './services/api';
+import { Alert, AlertTitle, AlertDescription } from './components/ui/alert';
+import { Card } from './components/ui/card';
 
 function HomePage() {
   const [result, setResult] = React.useState(null);
