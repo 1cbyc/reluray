@@ -285,7 +285,8 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 if __name__ == '__main__':
     import uvicorn
-    port = int(os.environ.get('PORT', 5000))
+    # Use 5001 instead of 5000 to avoid macOS AirPlay conflict
+    port = int(os.environ.get('PORT', 5001))
     debug = os.environ.get('FASTAPI_DEBUG', 'False').lower() == 'true'
     
     logger.info(f"Starting FastAPI application on port {port}")

@@ -17,9 +17,11 @@ OUTPUT_DIR = BASE_DIR / 'data'
 # Mapping COVID-19 dataset classes to ReluRay structure
 CLASS_MAPPING = {
     'Normal': 'NORMAL',
-    'COVID-19': 'PNEUMONIA',  # COVID-19 is a type of pneumonia
+    'COVID': 'PNEUMONIA',  # COVID-19 is a type of pneumonia
+    'COVID-19': 'PNEUMONIA',  # Alternative naming
     'Viral Pneumonia': 'PNEUMONIA',
-    'Lung Opacity': 'PNEUMONIA'  # Lung opacity often indicates pneumonia
+    'Lung_Opacity': 'PNEUMONIA',  # Lung opacity often indicates pneumonia
+    'Lung Opacity': 'PNEUMONIA'  # Alternative naming with space
 }
 
 SPLIT_RATIOS = {
@@ -32,26 +34,25 @@ SPLIT_RATIOS = {
 def find_dataset_structure(raw_dir):
     """Find the structure of the downloaded dataset."""
     # COVID-19 dataset typically has structure like:
-    # COVID-19_Radiography_Database/
-    #   ├── COVID-19/
+    # COVID-19_Radiography_Dataset/
+    #   ├── COVID/
     #   ├── Normal/
     #   ├── Viral Pneumonia/
-    #   └── Lung Opacity/
+    #   └── Lung_Opacity/
     
-    possible_structures = [
-        # Structure 1: Direct class folders
-        lambda d: [f for f in d.iterdir() if f.is_dir() and f.name in CLASS_MAPPING.keys()],
-        # Structure 2: Nested in a main folder
-        lambda d: [f for f in (d / 'COVID-19_Radiography_Database').iterdir() 
-                   if f.is_dir() and f.name in CLASS_MAPPING.keys()] if (d / 'COVID-19_Radiography_Database').exists() else [],
-    ]
-    
-    for structure_func in possible_structures:
-        folders = structure_func(raw_dir)
+    # Check for nested structure first
+    nested_dir = raw_dir / 'COVID-19_Radiography_Dataset'
+    if nested_dir.exists():
+        folders = [f for f in nested_dir.iterdir() 
+                  if f.is_dir() and not f.name.startswith('.')]
         if folders:
             return folders
     
-    return []
+    # Check for direct structure
+    folders = [f for f in raw_dir.iterdir() 
+              if f.is_dir() and not f.name.startswith('.')]
+    
+    return folders
 
 
 def preprocess_image(image_path, target_size=(224, 224)):
