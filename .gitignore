@@ -3,6 +3,11 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
+
+# Lock files (we use pnpm exclusively)
+package-lock.json
+yarn.lock
 
 # Production builds
 /build
