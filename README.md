@@ -144,6 +144,14 @@ okay, seeing i am working an update for 2025:
 3. **Get Results**: View prediction (Normal/Pneumonia) with confidence score
 4. **Next Steps**: Follow medical recommendations based on results
 
+### Example Results
+
+**Normal Chest X-Ray Detection:**
+![Normal X-Ray Result](readme-images/Screenshot-2026-01-19-at-8.50.20-PM.png)
+
+**Pneumonia Detection:**
+![Pneumonia Detection Result](readme-images/Screenshot-2026-01-19-at-8.50.38-PM.png)
+
 ## Deployment
 
 ReluRay is deployed on:
@@ -168,7 +176,8 @@ For detailed deployment instructions, see the deployment documentation in the re
 ## Technical Details
 
 ### Frontend Stack
-- **Framework**: React 18 with Create React App
+- **Framework**: Next.js 16.0.10
+- **Package Manager**: pnpm
 - **UI Components**: shadcn/ui (Radix UI + Tailwind CSS)
 - **Styling**: Tailwind CSS with Starlink-inspired design
 - **Font**: Poppins (Google Fonts)
@@ -227,8 +236,8 @@ For detailed deployment instructions, see the deployment documentation in the re
 
 # Then activate and run
 source venv/bin/activate
-cd api && python app.py  # Backend on http://localhost:5000
-npm start  # Frontend on http://localhost:3000 (new terminal)
+cd backend && python app.py  # Backend on http://localhost:5001
+cd frontend && pnpm dev  # Frontend on http://localhost:3000 (new terminal)
 ```
 
 **Manual Setup:**
@@ -239,11 +248,11 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # 2. Frontend
-npm install
+cd frontend && pnpm install
 
 # 3. Run
-cd api && python app.py  # Backend
-npm start  # Frontend (new terminal)
+cd backend && python app.py  # Backend on http://localhost:5001
+cd frontend && pnpm dev  # Frontend on http://localhost:3000 (new terminal)
 ```
 
 **Note**: Python 3.11 or 3.12 is required. TensorFlow doesn't support Python 3.13+ yet.

@@ -1,0 +1,50 @@
+import type React from "react"
+import type { Metadata } from "next"
+import { Manrope, Poppins } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import "./globals.css"
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+})
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
+})
+
+// Use Poppins for display/heading fonts as fallback
+const calSans = poppins
+const instrumentSans = poppins
+
+export const metadata: Metadata = {
+  title: "ReluRay - AI-Powered Medical Image Analysis",
+  description: "Advanced AI-powered medical image analysis. Instant, accurate, and confidential chest X-ray analysis.",
+  generator: 'reluray',
+  icons: {
+    icon: [
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/apple-icon.png',
+  },
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" className="dark">
+      <body className={`${manrope.variable} ${poppins.variable} font-sans antialiased`}>
+        <div className="noise-overlay" aria-hidden="true" />
+        {children}
+        {process.env.NODE_ENV === 'production' && <Analytics />}
+      </body>
+    </html>
+  )
+}
