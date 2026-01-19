@@ -29,6 +29,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Data directories (large training data - DO NOT COMMIT)
+data/
+data/**/*
+
 # Model files (large)
 *.h5
 *.keras

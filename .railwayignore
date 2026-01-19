@@ -1,0 +1,64 @@
+# Railway Build Ignore
+# Exclude large data directories from deployment builds
+
+# Training data (not needed for backend deployment)
+data/train/
+data/test/
+data/val/
+data/raw/
+
+# ML training scripts (not needed for runtime)
+ml/
+ml/**
+
+# Test files
+tests/
+tests/**
+
+# Frontend (deployed separately on Vercel)
+frontend/
+frontend/**
+
+# Documentation
+docs/
+docs/**
+personal-docs/
+personal-docs/**
+
+# Development files
+*.md
+README.md
+CHANGELOG.md
+REORGANIZATION_PLAN.md
+STRUCTURE_SUMMARY.txt
+
+# Python development
+*.py
+!backend/*.py
+venv/
+__pycache__/
+*.pyc
+
+# Scripts (not needed for deployment)
+scripts/
+scripts/**
+
+# Weights (large, not needed if using ImageNet weights)
+weights/
+
+# Build artifacts
+build/
+dist/
+*.log
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
