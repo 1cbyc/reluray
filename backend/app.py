@@ -31,19 +31,31 @@ app = FastAPI(
 )
 
 # Configure CORS
-cors_origins = os.environ.get('CORS_ORIGINS', '*').split(',')
-if cors_origins == ['*']:
-    logger.warning("CORS is set to allow all origins. For production, set CORS_ORIGINS environment variable.")
-    allow_origins = ['*']
-else:
+# In production, set CORS_ORIGINS to your frontend domain(s)
+# Example: CORS_ORIGINS=https://your-app.vercel.app,https://www.yourdomain.com
+cors_origins_env = os.environ.get('CORS_ORIGINS', '')
+is_production = os.environ.get('ENVIRONMENT', 'development').lower() == 'production'
+
+if cors_origins_env:
+    # Parse comma-separated origins
+    cors_origins = [origin.strip() for origin in cors_origins_env.split(',') if origin.strip()]
     allow_origins = cors_origins
+    logger.info(f"CORS configured for origins: {cors_origins}")
+else:
+    # Default behavior: allow all in development, require explicit config in production
+    if is_production:
+        logger.error("CORS_ORIGINS not set in production! Defaulting to empty list for security.")
+        allow_origins = []
+    else:
+        logger.warning("CORS_ORIGINS not set. Allowing all origins (development mode).")
+        allow_origins = ['*']
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 # Configuration
@@ -278,8 +290,8 @@ async def global_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=500,
         content={
-            'error': 'Internal server error',
-            'status': 'error'
+        'error': 'Internal server error',
+        'status': 'error'
         }
     )
 
