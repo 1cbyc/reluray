@@ -371,3 +371,4 @@ hey
 *.ps1
 *.md
 *.zip
+!README.md
