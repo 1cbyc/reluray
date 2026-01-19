@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { AlertTriangle, XCircle } from "lucide-react"
 import { ImageUpload } from "./image-upload"
 import { ResultDisplay } from "./result-display"
-import { healthCheck, predictImage, PredictResponse } from "@/lib/api"
+import { healthCheck, predictImage, PredictResponse } from "../lib/api"
 import { Card } from "./ui/card"
 
 export function ImageAnalysis() {
