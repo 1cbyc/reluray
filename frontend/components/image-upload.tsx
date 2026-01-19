@@ -49,15 +49,13 @@ export function ImageUpload({ onUpload, loading = false }: ImageUploadProps) {
       </div>
 
       {!preview ? (
-        <motion.div
+        <div
           {...getRootProps()}
           className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 ${
             isDragActive 
               ? 'border-zinc-600 bg-zinc-900/50' 
               : 'border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900/30'
           } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          whileHover={!loading ? { scale: 1.02 } : {}}
-          whileTap={!loading ? { scale: 0.98 } : {}}
         >
           <input {...getInputProps()} />
           <motion.div
@@ -74,7 +72,7 @@ export function ImageUpload({ onUpload, loading = false }: ImageUploadProps) {
           <p className="text-sm text-zinc-500">
             Supports JPEG, PNG, GIF, BMP (Max 10MB)
           </p>
-        </motion.div>
+        </div>
       ) : (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}

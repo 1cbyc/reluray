@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { FileText, Shield, Scale, AlertTriangle } from "lucide-react"
 
@@ -27,6 +27,11 @@ const sections = [
 
 export default function LegalPage() {
   const [activeSection, setActiveSection] = useState("disclaimer")
+  const [lastUpdated, setLastUpdated] = useState<string>("")
+
+  useEffect(() => {
+    setLastUpdated(new Date().toLocaleDateString())
+  }, [])
 
   return (
     <div className="min-h-screen bg-zinc-950 pt-24">
@@ -142,7 +147,7 @@ export default function LegalPage() {
                 
                 <div className="space-y-4">
                   <p>
-                    <strong className="text-white">Last Updated:</strong> {new Date().toLocaleDateString()}
+                    <strong className="text-white">Last Updated:</strong> {lastUpdated || "January 2026"}
                   </p>
 
                   <div>
@@ -213,7 +218,7 @@ export default function LegalPage() {
                 
                 <div className="space-y-4">
                   <p>
-                    <strong className="text-white">Last Updated:</strong> {new Date().toLocaleDateString()}
+                    <strong className="text-white">Last Updated:</strong> {lastUpdated || "January 2026"}
                   </p>
 
                   <div>

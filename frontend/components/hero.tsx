@@ -18,7 +18,7 @@ const textRevealVariants = {
     y: 0,
     transition: {
       duration: 0.8,
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
       delay: i * 0.1,
     },
   }),
@@ -97,15 +97,16 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
         >
-          <a href="#analyze">
-            <Button
-              size="lg"
-              className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-8 h-12 text-base font-medium shadow-lg shadow-white/10"
-            >
+          <Button
+            asChild
+            size="lg"
+            className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-8 h-12 text-base font-medium shadow-lg shadow-white/10"
+          >
+            <a href="#analyze">
               Analyze X-Ray
               <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </a>
+            </a>
+          </Button>
           {/* <a href="#features">
             <Button
               variant="outline"

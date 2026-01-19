@@ -37,6 +37,11 @@ export function ImageAnalysis() {
     setResult(null)
 
     try {
+      // Wait for health check to complete if still checking
+      if (apiStatus === 'checking') {
+        await checkApiHealth()
+      }
+
       // Convert file to base64
       const base64Image = await fileToBase64(file)
       

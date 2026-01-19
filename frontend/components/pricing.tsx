@@ -160,7 +160,7 @@ export function Pricing() {
                       ${plan.price[billingCycle]}
                     </span>
                     <span className="text-zinc-400 text-base">
-                      /{billingCycle === "monthly" ? "month" : "month"}
+                      /{billingCycle === "monthly" ? "month" : "year"}
                     </span>
                     {billingCycle === "yearly" && (
                       <span className="text-xs py-1 px-3 rounded-full font-medium bg-emerald-500/10 text-emerald-300">
