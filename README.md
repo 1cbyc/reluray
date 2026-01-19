@@ -144,6 +144,14 @@ okay, seeing i am working an update for 2025:
 3. **Get Results**: View prediction (Normal/Pneumonia) with confidence score
 4. **Next Steps**: Follow medical recommendations based on results
 
+### Example Results
+
+**Normal Chest X-Ray Detection:**
+![Normal X-Ray Result](readme-images/Screenshot-2026-01-19-at-8.50.20-PM.png)
+
+**Pneumonia Detection:**
+![Pneumonia Detection Result](readme-images/Screenshot-2026-01-19-at-8.50.38-PM.png)
+
 ## Deployment
 
 ReluRay is deployed on:
