@@ -372,3 +372,7 @@ best_model.keras
 *.md
 *.zip
 !README.md
+
+# EXCEPTIONS - Allow these important files
+!CHANGELOG.md
+!backend/README.md

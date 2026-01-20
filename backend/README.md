@@ -2,14 +2,6 @@
 
 FastAPI for medical image analysis from chest X-ray images.
 
-## Features
-
-- **FastAPI**: Modern, fast, async-capable framework
-- **Automatic API Documentation**: OpenAPI/Swagger UI at `/api/docs`
-- **Type Safety**: Pydantic models for request/response validation
-- **Production Ready**: Uvicorn ASGI server
-- **Medical Image Analysis**: VGG16-based pneumonia detection
-
 ## Endpoints
 
 ### `GET /api/health`
