@@ -365,11 +365,7 @@ jspm_packages/
 .tern-port
 
 # Private/Personal files - DO NOT COMMIT
-commit.py
 best_model.keras
-hi
-hide.c
-hey
 ._*
 *.sh
 *.ps1
