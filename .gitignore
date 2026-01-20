@@ -269,7 +269,6 @@ best_model.keras
 hi
 hide.c
 hey
-*.txt
 !backend/requirements.txt
 ._*
 
