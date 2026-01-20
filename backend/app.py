@@ -64,7 +64,13 @@ class ModelManager:
     
     def find_model_file(self):
         """Find the model file in common locations"""
+        versioned_model = f"best_model_{MODEL_VERSION}.keras"
         possible_paths = [
+            f'../{versioned_model}',
+            f'../../{versioned_model}',
+            versioned_model,
+            f'./{versioned_model}',
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), versioned_model),
             '../best_model.keras',  # From backend/ directory (in repository root)
             '../../best_model.keras',  # Alternative path
             'best_model.keras',      # In current directory
@@ -198,6 +204,7 @@ class HealthResponse(BaseModel):
     model_loaded: bool
     timestamp: str
     version: str
+    model_version: str
     uptime_seconds: float
     memory_usage_mb: float
     cpu_percent: float
@@ -341,6 +348,7 @@ async def health_check():
         model_loaded=model_info['model_loaded'],
         timestamp=datetime.now().isoformat(),
         version='1.0.0',
+        model_version=MODEL_VERSION,
         uptime_seconds=round(metrics['uptime_seconds'], 2),
         memory_usage_mb=round(metrics['memory_usage_mb'], 2),
         cpu_percent=round(metrics['cpu_percent'], 2)
@@ -368,7 +376,8 @@ async def get_metrics():
             'model_load_time': model_info['load_time_seconds'],
             'cache_size': model_info['cache_size'],
             'cache_limit': model_info['cache_limit'],
-            'version': '1.0.0'
+            'version': '1.0.0',
+            'model_version': MODEL_VERSION
         }
     }
 
@@ -433,6 +442,7 @@ async def predict(request: PredictRequest):
             'raw_confidence': round(confidence, 3),
             'timestamp': datetime.now().isoformat(),
             'processing_time': round(total_time, 3),
+            'model_version': MODEL_VERSION,
             'status': 'success'
         }
         
@@ -465,6 +475,7 @@ async def model_info():
         'classes': ['Normal', 'Pneumonia'],
         'input_size': '224x224x3',
         'framework': 'TensorFlow/Keras',
+        'model_version': MODEL_VERSION,
         'model_loaded': model is not None,
         'status': 'success'
     }
