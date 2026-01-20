@@ -269,7 +269,6 @@ best_model.keras
 hi
 hide.c
 hey
-!backend/requirements.txt
 ._*
 
 # Python virtual environments
@@ -371,7 +370,6 @@ best_model.keras
 hi
 hide.c
 hey
-*.txt
 ._*
 *.sh
 *.ps1
