@@ -6,3 +6,4 @@ tensorflow==2.16.1
 numpy==1.26.4
 Pillow==10.0.0
 kaggle==1.5.16
+psutil==5.9.8

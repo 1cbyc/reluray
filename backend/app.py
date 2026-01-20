@@ -1,6 +1,11 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request as StarletteRequest
+from starlette.responses import Response
 from pydantic import BaseModel, Field
 from typing import Optional
 import os
@@ -13,6 +18,11 @@ import base64
 import logging
 from datetime import datetime
 import time
+import psutil
+import asyncio
+from functools import lru_cache
+from typing import Dict, Any
+import hashlib
 
 # Configure logging
 logging.basicConfig(
@@ -20,6 +30,112 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Add security headers to all responses"""
+    
+    async def dispatch(self, request: StarletteRequest, call_next):
+        response = await call_next(request)
+        
+        # Security headers
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'"
+        response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+        
+        # HSTS (only in production)
+        if os.environ.get('ENVIRONMENT', 'development').lower() == 'production':
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+        
+        return response
+
+# Model caching and optimization
+class ModelManager:
+    """Manages model loading with caching and lazy loading"""
+    
+    def __init__(self):
+        self._model = None
+        self._model_path = None
+        self._load_time = 0
+        self._cache = {}
+        self._cache_size_limit = 100  # Max cached predictions
+    
+    def find_model_file(self):
+        """Find the model file in common locations"""
+        possible_paths = [
+            '../best_model.keras',  # From backend/ directory (in repository root)
+            '../../best_model.keras',  # Alternative path
+            'best_model.keras',      # In current directory
+            './best_model.keras',   # Current directory
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), 'best_model.keras'),  # Absolute from backend/
+        ]
+        
+        for path in possible_paths:
+            if os.path.exists(path):
+                logger.info(f"Model file found at: {os.path.abspath(path)}")
+                return path
+        
+        return None
+    
+    @lru_cache(maxsize=32)
+    def _get_image_hash(self, image_data: str) -> str:
+        """Generate hash for image data to use as cache key"""
+        return hashlib.md5(image_data.encode()).hexdigest()
+    
+    def get_model(self):
+        """Lazy load model only when needed"""
+        if self._model is None:
+            self._model_path = self.find_model_file()
+            if self._model_path:
+                try:
+                    logger.info(f"Loading model from: {self._model_path}")
+                    start_load = time.time()
+                    self._model = load_model(self._model_path)
+                    self._load_time = time.time() - start_load
+                    logger.info(f"✅ Model loaded successfully in {self._load_time:.2f}s!")
+                    
+                    # Log model summary
+                    logger.info(f"Model input shape: {self._model.input_shape}")
+                    logger.info(f"Model output shape: {self._model.output_shape}")
+                except Exception as e:
+                    logger.error(f"❌ Error loading model: {e}", exc_info=True)
+                    self._model = None
+            else:
+                logger.error("❌ Model file not found in any expected location")
+                logger.error(f"Current working directory: {os.getcwd()}")
+                logger.error(f"Files in current directory: {os.listdir('.')}")
+        
+        return self._model
+    
+    def get_cached_prediction(self, image_hash: str):
+        """Get cached prediction if available"""
+        return self._cache.get(image_hash)
+    
+    def cache_prediction(self, image_hash: str, prediction: Dict[str, Any]):
+        """Cache prediction result"""
+        # Implement simple LRU by removing oldest entries if cache is full
+        if len(self._cache) >= self._cache_size_limit:
+            # Remove oldest entry (first item in dict)
+            oldest_key = next(iter(self._cache))
+            del self._cache[oldest_key]
+        
+        self._cache[image_hash] = prediction
+        logger.debug(f"Cached prediction for hash: {image_hash[:8]}...")
+    
+    def get_model_info(self):
+        """Get model loading information"""
+        return {
+            'model_loaded': self._model is not None,
+            'model_path': self._model_path,
+            'load_time_seconds': self._load_time,
+            'cache_size': len(self._cache),
+            'cache_limit': self._cache_size_limit
+        }
+
+# Initialize model manager
+model_manager = ModelManager()
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -29,6 +145,16 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
 )
+
+# Add security headers middleware
+app.add_middleware(SecurityHeadersMiddleware)
+
+# Add trusted host middleware (prevents host header attacks)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
+
+# Add HTTPS redirect middleware in production
+if os.environ.get('ENVIRONMENT', 'development').lower() == 'production':
+    app.add_middleware(HTTPSRedirectMiddleware)
 
 # Configure CORS
 # In production, set CORS_ORIGINS to your frontend domain(s)
@@ -61,6 +187,7 @@ app.add_middleware(
 # Configuration
 MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB
 MODEL_INPUT_SIZE = (224, 224)
+MODEL_VERSION = os.environ.get("MODEL_VERSION", "1.0.0")
 
 # Pydantic models for request/response validation
 class PredictRequest(BaseModel):
@@ -71,6 +198,9 @@ class HealthResponse(BaseModel):
     model_loaded: bool
     timestamp: str
     version: str
+    uptime_seconds: float
+    memory_usage_mb: float
+    cpu_percent: float
 
 class PredictResponse(BaseModel):
     prediction: str
@@ -78,6 +208,7 @@ class PredictResponse(BaseModel):
     raw_confidence: Optional[float] = None
     timestamp: str
     processing_time: float
+    model_version: str
     status: str
 
 class ErrorResponse(BaseModel):
@@ -91,6 +222,7 @@ class ModelInfoResponse(BaseModel):
     classes: list
     input_size: str
     framework: str
+    model_version: str
     model_loaded: bool
     model_input_shape: Optional[str] = None
     model_output_shape: Optional[str] = None
@@ -114,26 +246,34 @@ def find_model_file():
     
     return None
 
-# Load the trained model
-model = None
-model_path = find_model_file()
+# Load the trained model (using model manager for lazy loading)
+model = None  # Will be loaded lazily by model_manager
+model_path = None  # Will be set by model_manager
+start_time = time.time()
 
-if model_path:
+def get_system_metrics():
+    """Get system performance metrics for monitoring"""
     try:
-        logger.info(f"Loading model from: {model_path}")
-        model = load_model(model_path)
-        logger.info("✅ Model loaded successfully!")
+        memory = psutil.virtual_memory()
+        cpu_percent = psutil.cpu_percent(interval=1)
+        uptime = time.time() - start_time
         
-        # Log model summary
-        logger.info(f"Model input shape: {model.input_shape}")
-        logger.info(f"Model output shape: {model.output_shape}")
+        return {
+            'uptime_seconds': uptime,
+            'memory_usage_mb': memory.used / (1024 * 1024),
+            'cpu_percent': cpu_percent,
+            'memory_total_mb': memory.total / (1024 * 1024),
+            'memory_percent': memory.percent
+        }
     except Exception as e:
-        logger.error(f"❌ Error loading model: {e}", exc_info=True)
-        model = None
-else:
-    logger.error("❌ Model file not found in any expected location")
-    logger.error(f"Current working directory: {os.getcwd()}")
-    logger.error(f"Files in current directory: {os.listdir('.')}")
+        logger.error(f"Error getting system metrics: {e}")
+        return {
+            'uptime_seconds': time.time() - start_time,
+            'memory_usage_mb': 0,
+            'cpu_percent': 0,
+            'memory_total_mb': 0,
+            'memory_percent': 0
+        }
 
 def preprocess_image(image_data: str):
     """Preprocess image for model prediction"""
@@ -192,19 +332,62 @@ def preprocess_image(image_data: str):
 
 @app.get("/api/health", response_model=HealthResponse, tags=["Health"])
 async def health_check():
-    """Health check endpoint for monitoring"""
+    """Enhanced health check endpoint with monitoring metrics"""
+    metrics = get_system_metrics()
+    model_info = model_manager.get_model_info()
+    
     return HealthResponse(
         status='healthy',
-        model_loaded=model is not None,
+        model_loaded=model_info['model_loaded'],
         timestamp=datetime.now().isoformat(),
-        version='1.0.0'
+        version='1.0.0',
+        uptime_seconds=round(metrics['uptime_seconds'], 2),
+        memory_usage_mb=round(metrics['memory_usage_mb'], 2),
+        cpu_percent=round(metrics['cpu_percent'], 2)
     )
+
+@app.get("/api/metrics", tags=["Monitoring"])
+async def get_metrics():
+    """Detailed system metrics for monitoring"""
+    metrics = get_system_metrics()
+    model_info = model_manager.get_model_info()
+    
+    return {
+        'status': 'success',
+        'timestamp': datetime.now().isoformat(),
+        'system': {
+            'uptime_seconds': round(metrics['uptime_seconds'], 2),
+            'memory_usage_mb': round(metrics['memory_usage_mb'], 2),
+            'memory_total_mb': round(metrics['memory_total_mb'], 2),
+            'memory_percent': round(metrics['memory_percent'], 2),
+            'cpu_percent': round(metrics['cpu_percent'], 2)
+        },
+        'application': {
+            'model_loaded': model_info['model_loaded'],
+            'model_path': model_info['model_path'],
+            'model_load_time': model_info['load_time_seconds'],
+            'cache_size': model_info['cache_size'],
+            'cache_limit': model_info['cache_limit'],
+            'version': '1.0.0'
+        }
+    }
 
 @app.post("/api/predict", response_model=PredictResponse, tags=["Prediction"])
 async def predict(request: PredictRequest):
-    """Predict pneumonia from uploaded image"""
+    """predict pneumonia from uploaded image with caching"""
     start_time = time.time()
     
+    # Get image hash for caching
+    image_hash = model_manager._get_image_hash(request.image)
+    
+    # Check cache first
+    cached_result = model_manager.get_cached_prediction(image_hash)
+    if cached_result:
+        logger.info(f"Cache hit for image hash: {image_hash[:8]}...")
+        return PredictResponse(**cached_result)
+    
+    # Get model (lazy loading)
+    model = model_manager.get_model()
     if model is None:
         logger.error("Prediction attempted but model is not loaded")
         raise HTTPException(
@@ -243,16 +426,22 @@ async def predict(request: PredictRequest):
         
         total_time = time.time() - start_time
         
+        # craeted a better response method
+        response_data = {
+            'prediction': result,
+            'confidence': round(final_confidence, 3),
+            'raw_confidence': round(confidence, 3),
+            'timestamp': datetime.now().isoformat(),
+            'processing_time': round(total_time, 3),
+            'status': 'success'
+        }
+        
+        # Cache the result
+        model_manager.cache_prediction(image_hash, response_data)
+        
         logger.info(f"Prediction completed: {result} (confidence: {final_confidence:.3f}, time: {total_time:.2f}s)")
         
-        return PredictResponse(
-            prediction=result,
-            confidence=round(final_confidence, 3),
-            raw_confidence=round(confidence, 3),
-            timestamp=datetime.now().isoformat(),
-            processing_time=round(total_time, 3),
-            status='success'
-        )
+        return PredictResponse(**response_data)
         
     except HTTPException:
         raise
@@ -265,7 +454,10 @@ async def predict(request: PredictRequest):
 
 @app.get("/api/info", response_model=ModelInfoResponse, tags=["Info"])
 async def model_info():
-    """Get model information"""
+    """Get model information with caching details"""
+    model = model_manager.get_model()
+    model_info_data = model_manager.get_model_info()
+    
     info = {
         'model_name': 'VGG16 Transfer Learning',
         'architecture': 'Convolutional Neural Network',
@@ -280,6 +472,12 @@ async def model_info():
     if model is not None:
         info['model_input_shape'] = str(model.input_shape)
         info['model_output_shape'] = str(model.output_shape)
+    
+    # Add caching information
+    info['cache_enabled'] = True
+    info['cache_size'] = model_info_data['cache_size']
+    info['cache_limit'] = model_info_data['cache_limit']
+    info['lazy_loading'] = True
     
     return ModelInfoResponse(**info)
 
