@@ -270,6 +270,7 @@ hi
 hide.c
 hey
 *.txt
+!backend/requirements.txt
 ._*
 
 # Python virtual environments
